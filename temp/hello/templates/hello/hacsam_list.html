@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %} Student List {% endblock %}
+
+{% block content %}
+    <div class="btn-group">
+        <a href="{% url 'create' %}" class="btn btn-info">Add Student</a>
+    </div>
+    <p></p>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">이름</th>
+            <th scope="col">생년월일</th>
+            <th scope="col">학번</th>
+            <th scope="col">학과</th>
+            <th scope="col">이메일</th>
+            <th scope="col">수정</th>
+            <th scope="col">삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{% url 'detail' pk=student.id %}">{{ student.name }}</a></td>
+                <td><a href="{{ student.birthday }}" target="_blank">{{ student.birthday }}</a></td>
+                <td><a href="{{ student.stdnum }}" target="_blank">{{ student.stdnum }}</a></td>
+                <td><a href="{{ student.major }}" target="_blank">{{ student.major }}</a></td>
+                <td><a href="{{ student.email }}" target="_blank">{{ student.email }}</a></td>
+                <td><a href="{% url 'update' pk=student.id %}" class="btn btn-success btn-sm">수정</a></td>
+                <td><a href="{% url 'delete' pk=student.id %}" class="btn btn-danger btn-sm">삭제</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+{% endblock %}
+{% block pagination %}
+    {% if is_paginated %}
+        <ul class="pagination justify-content-center pagination-sm">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'list' %}?page={{ page_obj.previous_page_number }}" tabindex="-1">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+            {% endif %}
+
+            {% for object in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == forloop.counter %} disabled {% endif %} ">
+                    <a class="page-link" href="{{ request.path }}?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+                </li>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'list' %}?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+{% endblock %}
