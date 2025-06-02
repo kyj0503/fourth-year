@@ -1,0 +1,7 @@
+# IDE 설정 파일들
+.idea/
+*.iml
+
+# 기타 임시 파일들
+.DS_Store
+Thumbs.db
