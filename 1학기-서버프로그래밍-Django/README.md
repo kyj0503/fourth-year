@@ -13,6 +13,19 @@ python -m venv .venv
 pip install django djangorestframework
 ```
 
+### 환경 설정 및 새 DB 생성
+
+`.env.example`은 필요한 프로세스 환경변수 목록이며 자동 로드되지 않습니다. 실제 환경 파일·SQLite 파일·인증 토큰은 커밋하지 않습니다. PowerShell에서 다음처럼 현재 프로세스에 새 키를 생성합니다. 값을 출력하거나 문서에 복사하지 않습니다.
+
+```powershell
+$env:DJANGO_SECRET_KEY = python -c "import secrets; print(secrets.token_urlsafe(64))"
+$env:DJANGO_DEBUG = "true" # 개인 로컬 개발에서만 사용; 기본값 false
+$env:DJANGO_ALLOWED_HOSTS = "localhost,127.0.0.1"
+python manage.py migrate
+```
+
+실제 배포에서는 직접 관리하는 환경 파일이나 실행 환경에서 고정된 새 키를 주입합니다. 재시작마다 키를 재생성하지 않습니다. 예전에 공개한 키·DB·토큰은 재사용하지 않습니다. DB의 Git 추적 해제는 현재 로컬 파일을 지우지 않으며 과거 Git 이력도 정리하지 않습니다. 새 클론은 마이그레이션으로 빈 DB를 만들고 본인 계정을 생성합니다. [Django 배포 점검 안내](https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/)
+
 ### 슈퍼유저 생성 (최초 1회)
 ```
 python manage.py createsuperuser
@@ -50,14 +63,14 @@ Content-Type: application/json
 **응답:**
 ```json
 {
-    "token": "9bd82954e541a59f8eca0bdf0dba5756b3207aa6"
+    "token": "YOUR_TOKEN"
 }
 ```
 
 #### 인증 헤더
 발급받은 토큰을 모든 API 요청 헤더에 포함:
 ```
-Authorization: Token 9bd82954e541a59f8eca0bdf0dba5756b3207aa6
+Authorization: Token YOUR_TOKEN
 ```
 
 ---
@@ -220,5 +233,5 @@ curl -X POST http://127.0.0.1:8000/api/token/ \
 
 # 학생 목록 조회
 curl -X GET http://127.0.0.1:8000/api/hacsams/ \
-  -H "Authorization: Token 9bd82954e541a59f8eca0bdf0dba5756b3207aa6"
+  -H "Authorization: Token YOUR_TOKEN"
 ```
