@@ -60,3 +60,6 @@ Thumbs.db
 # OS 관련
 desktop.ini
 ehthumbs.db
+
+.env.*
+!.env.example
